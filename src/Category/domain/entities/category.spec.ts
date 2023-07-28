@@ -1,7 +1,7 @@
 import { Category, CategoryProperties } from "./Category"
 import { omit } from "lodash"
 import { validate as uuidValidate } from "uuid"
-import UniqueEntityId from "../../../@seedwork/domain/unique-entity-id.vo"
+import UniqueEntityId from "../../../@seedwork/domain/value-objects/unique-entity-id.vo"
 describe("Category Unit Test", () => {
   test("Constructor of category", () => {
     //Arrange
@@ -95,7 +95,7 @@ describe("Category Unit Test", () => {
     data.forEach((i) => {
       const category = new Category(i.props, i.id)
       expect(category.id).not.toBeNull()
-      expect(category.id).toBeInstanceOf(UniqueEntityId)
+      expect(category.uniqueEntityId).toBeInstanceOf(UniqueEntityId)
     })
   })
 
@@ -162,5 +162,32 @@ describe("Category Unit Test", () => {
     })
 
     expect(category.created_at).toBe(created_at)
+  })
+
+  it ("should update a category", () => {
+    const category = new Category({name:"Movie"})
+    category.update("Documentary", "Some description")
+    expect(category.name).toBe("Documentary")
+    expect(category.description).toBe("Some description")
+
+  })
+
+  it ("Should active a category", () => {
+    const category = new Category({
+      name:"Filmes",
+      is_active: false
+    })
+
+    category.activate()
+    expect(category.is_active).toBeTruthy()
+  })
+  it ("Should deactivate a category", () => {
+    const category = new Category({
+      name:"Filmes",
+      is_active: true
+    })
+
+    category.deactivate()
+    expect(category.is_active).toBeFalsy()
   })
 })
